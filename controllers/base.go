@@ -17,16 +17,16 @@ import (
 
 type BaseController struct {
 	beego.Controller
-	controllerName string	//控制器名称
+	controllerName string //控制器名称
 	actionName     string
-	user           *models.Admin	//用户实例
-	userId         int	//用户id
-	userName       string//用户名称
-	loginName      string//登录名称
-	page           int //页码
-	pageSize       int //分页值
-	allowUrl       string//权限控制url
-	resultJsonArr  utils.ResultJsonArr//接口统一返回值类型
+	user           *models.Admin       //用户实例
+	userId         int                 //用户id
+	userName       string              //用户名称
+	loginName      string              //登录名称
+	page           int                 //页码
+	pageSize       int                 //分页值
+	allowUrl       string              //权限控制url
+	resultJsonArr  utils.ResultJsonArr //接口统一返回值类型
 }
 
 //初始化基础信息
