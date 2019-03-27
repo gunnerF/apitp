@@ -110,3 +110,11 @@ key value排序函数使用方法
 ```
 在业务的model中一定要实现TableName方法，在model实例化时会根据业务model的该方法来获取表名称。
 
+## utils
+- 工具类以及公共参数的定义
+    |-- utils
+    |   `-- base.go //定义一些方法
+    |   `-- cache.go //缓存设置
+    |   `-- error.go //错误信息及状态码定义
+    |   `-- keyvalues.go //key value关系定义
+    |   `-- types.go //公共参数类型定义
