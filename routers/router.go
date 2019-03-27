@@ -25,6 +25,11 @@ func init() {
 				&controllers.GroupController{},
 			),
 		),
+		beego.NSNamespace("/login",
+			beego.NSInclude(
+				&controllers.LoginController{},
+			),
+		),
 	)
 	beego.AddNamespace(ns)
 }

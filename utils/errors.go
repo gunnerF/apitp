@@ -15,6 +15,7 @@ var (
 
 	AlreadyLogin    = map[string]interface{}{"code": 30000, "message": "已经登陆"}
 	UserOrPassword  = map[string]interface{}{"code": 30001, "message": "用户名或密码错误"}
+	UserPwdEmpty    = map[string]interface{}{"code": 30001, "message": "用户名或密码不能为空"}
 	AccountDisabled = map[string]interface{}{"code": 30002, "message": "该账号已经被禁用"}
 
 	MissToken    = map[string]interface{}{"code": 40000, "message": "token缺失"}

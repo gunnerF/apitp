@@ -44,7 +44,7 @@ func Init() {
 	//注册连接数据库(mysql)
 	orm.RegisterDataBase("default", "mysql", dbConn)
 	//注册model
-	orm.RegisterModel(new(Node), new(SubGroup), new(Group))
+	orm.RegisterModel(new(Node), new(SubGroup), new(Group), new(Admin))
 
 }
 
