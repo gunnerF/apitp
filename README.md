@@ -7,6 +7,7 @@
 ```shell
 // 进入到项目目录，启动项目
 bee run
+// 访问示例： http://localhost:8080/v1/node/getNodeType
 ```
 
 ## 项目结构
