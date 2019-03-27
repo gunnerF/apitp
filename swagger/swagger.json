@@ -1,0 +1,121 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "title": "beego Test API",
+        "description": "beego has a very cool tools to autogenerate documents for your API",
+        "version": "1.0.0",
+        "termsOfService": "http://beego.me/",
+        "contact": {
+            "email": "astaxie@gmail.com"
+        },
+        "license": {
+            "name": "Apache 2.0",
+            "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+        }
+    },
+    "basePath": "/v1",
+    "paths": {
+        "/group/groupAdd": {
+            "post": {
+                "tags": [
+                    "group"
+                ]
+            }
+        },
+        "/group/groupDelete": {
+            "post": {
+                "tags": [
+                    "group"
+                ]
+            }
+        },
+        "/node/": {
+            "get": {
+                "tags": [
+                    "node"
+                ],
+                "description": "获取节点列表",
+                "operationId": "NodeController.节点列表",
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "nodeName",
+                        "description": "节点名称",
+                        "type": "string"
+                    },
+                    {
+                        "in": "body",
+                        "name": "subGroupName",
+                        "description": "二级分类名称",
+                        "type": "string"
+                    },
+                    {
+                        "in": "body",
+                        "name": "groupName",
+                        "description": "一级分类名称",
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "20000": {
+                        "description": "{[]map[string]interface{}}"
+                    },
+                    "403": {
+                        "description": "body is empty"
+                    }
+                }
+            }
+        },
+        "/node/getNodeType": {
+            "get": {
+                "tags": [
+                    "node"
+                ],
+                "description": "获取节点下拉列表",
+                "operationId": "NodeController.节点下拉列表",
+                "responses": {
+                    "20000": {
+                        "description": "{[]map[string]interface{}}"
+                    },
+                    "403": {
+                        "description": "body is empty"
+                    }
+                }
+            }
+        },
+        "/node/nodeAdd": {
+            "post": {
+                "tags": [
+                    "node"
+                ]
+            }
+        },
+        "/node/nodeDetail": {
+            "get": {
+                "tags": [
+                    "node"
+                ],
+                "description": "获取节点详情",
+                "operationId": "NodeController.节点详情",
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "id",
+                        "description": "节点id",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                ],
+                "responses": {
+                    "20000": {
+                        "description": ""
+                    },
+                    "403": {
+                        "description": "body is empty"
+                    }
+                }
+            }
+        }
+    }
+}
