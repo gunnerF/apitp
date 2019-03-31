@@ -37,7 +37,7 @@ CREATE TABLE `tp_admin` (
   `update_time` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '修改时间',
   PRIMARY KEY (`id`),
   UNIQUE KEY `idx_user_name` (`login_name`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COMMENT='管理员表';
+) ENGINE=InnoDB AUTO_INCREMENT=5  COMMENT='管理员表';
 
 -- ----------------------------
 -- Records of tp_admin
@@ -62,7 +62,7 @@ CREATE TABLE `tp_group` (
   `update_time` int(11) NOT NULL DEFAULT '0' COMMENT '创建时间',
   PRIMARY KEY (`id`),
   KEY `idx_create_id` (`create_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COMMENT='一级分类表';
+) ENGINE=InnoDB AUTO_INCREMENT=5 COMMENT='一级分类表';
 
 -- ----------------------------
 -- Records of tp_group
@@ -89,7 +89,7 @@ CREATE TABLE `tp_node` (
   `update_time` int(11) NOT NULL DEFAULT '0' COMMENT '创建时间',
   PRIMARY KEY (`id`),
   KEY `idx_main_id` (`sub_group_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb4 COMMENT='节点表';
+) ENGINE=InnoDB AUTO_INCREMENT=16 COMMENT='节点表';
 
 -- ----------------------------
 -- Records of tp_node
@@ -125,7 +125,7 @@ CREATE TABLE `tp_sub_group` (
   `update_time` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '创建时间',
   PRIMARY KEY (`id`),
   KEY `idx_group_id` (`group_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COMMENT='二级分类表';
+) ENGINE=InnoDB AUTO_INCREMENT=9 COMMENT='二级分类表';
 
 -- ----------------------------
 -- Records of tp_sub_group

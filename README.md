@@ -5,6 +5,11 @@
 ## 初始化项目
 - 创建mysql数据库，数据库名称api_tp，将项目中 api_tp.sql导入库中
 ```shell
+// 1 项目中应用了mysql,validation,errors等组件,启动前需要go get 相关组件
+go get github.com/go-sql-driver/mysql
+go get github.com/patrickmn/go-cache
+go get github.com/pkg/errors
+go get github.com/astaxie/beego/validation
 // 进入到项目目录，启动项目
 bee run
 // 访问示例： http://localhost:8080/v1/node/getNodeType
