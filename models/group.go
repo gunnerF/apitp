@@ -13,8 +13,8 @@ import (
 )
 
 type Group struct {
-	scene   string
-	Id         int
+	scene string
+	Id    int
 	//GroupName  string `valid:"Required"`
 	//Detail     string `valid:"Required"`
 	GroupName  string

@@ -13,8 +13,8 @@ import (
 )
 
 type Node struct {
-	scene   string
-	Id         int
+	scene string
+	Id    int
 	//SubGroup   *SubGroup `orm:"rel(fk)" valid:"Required"` //orm定义model间关联关系，用于关联查询, valid定义参数验证
 	//NodeType   int       `valid:"Required;Range(1,4)"`
 	//NodeName   string    `json:"nodeName" valid:"Required"`
@@ -53,7 +53,7 @@ func (m *Node) Valid(v *validation.Validation) {
 			res.Message("NodeType不能为空")
 			v.SetError("NodeType", res.Error.Message)
 		}
-		if res := v.Range(m.NodeType,1,4, "nodeType"); !res.Ok {
+		if res := v.Range(m.NodeType, 1, 4, "nodeType"); !res.Ok {
 			res.Error.Message = res.Error.Name + res.Error.Message
 			v.SetError("NodeType", res.Error.Message)
 		}
