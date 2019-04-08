@@ -71,13 +71,10 @@ func (c *NodeController) GetNodeType() {
 // @Failure 403 body is empty
 // @router /nodeDetail [get]
 func (c *NodeController) NodeDetail() {
-	nodeId, err := c.GetInt("id")
-	if err != nil {
-		c.jsonMsgResult("节点id不能为空", utils.ParamsError["code"].(int), 1, c.resultJsonArr)
-	}
-	if nodeId <= 0 {
-		c.jsonMsgResult("节点id必须大于0", utils.ParamsError["code"].(int), 1, c.resultJsonArr)
-	}
+	nodeId, _ := c.GetInt("id")
+	node := new(models.Node)
+	node.SetScene("detail")
+	c.ParamsValidate(node)
 	result := new(services.NodeService).NodeGetDetail(nodeId)
 	c.jsonMsgResult(utils.RequestSuccess["message"], utils.RequestSuccess["code"].(int), int64(len(result)), result)
 }
@@ -85,6 +82,7 @@ func (c *NodeController) NodeDetail() {
 // @router /nodeAdd [post]
 func (c *NodeController) NodeAdd() {
 	node := new(models.Node)
+	node.SetScene("add")
 	currentTime := time.Now().Unix()
 	nodeType, _ := c.GetInt("nodeType")
 	subGroupId, _ := c.GetInt("subGroupId", 0)

@@ -32,6 +32,7 @@ func (c *GroupController) URLMapping() {
 func (c *GroupController) GroupAdd() {
 
 	group := new(models.Group)
+	group.SetScene("add")
 	group.GroupName = strings.TrimSpace(c.GetString("groupName"))
 	group.Detail = strings.TrimSpace(c.GetString("detail"))
 	group.Status = 1
@@ -54,9 +55,9 @@ func (c *GroupController) GroupAdd() {
 //@router /groupDelete [post]
 func (c *GroupController) GroupDelete() {
 	id, err := c.GetInt("id")
-	if id == 0 || err != nil {
-		c.jsonMsgResult("id不能为空，且必须为整型", utils.ParamsError["code"].(int), 1, c.resultJsonArr)
-	}
+	group := new(models.Group)
+	group.SetScene("delete")
+	c.ParamsValidate(group)
 	err = new(services.GroupService).GroupDelete(id)
 	if err != nil {
 		c.jsonMsgResult(err.Error(), utils.ParamsError["code"].(int), 1, c.resultJsonArr)

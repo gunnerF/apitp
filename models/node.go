@@ -7,13 +7,20 @@
 ***********************************************/
 package models
 
-import "github.com/astaxie/beego/orm"
+import (
+	"github.com/astaxie/beego/orm"
+	"github.com/astaxie/beego/validation"
+)
 
 type Node struct {
+	scene   string
 	Id         int
-	SubGroup   *SubGroup `orm:"rel(fk)" valid:"Required"` //orm定义model间关联关系，用于关联查询, valid定义参数验证
-	NodeType   int       `valid:"Required;Range(1,4)"`
-	NodeName   string    `json:"nodeName" valid:"Required"`
+	//SubGroup   *SubGroup `orm:"rel(fk)" valid:"Required"` //orm定义model间关联关系，用于关联查询, valid定义参数验证
+	//NodeType   int       `valid:"Required;Range(1,4)"`
+	//NodeName   string    `json:"nodeName" valid:"Required"`
+	SubGroup   *SubGroup `orm:"rel(fk)"` //orm定义model间关联关系，用于关联查询, valid定义参数验证
+	NodeType   int
+	NodeName   string
 	Detail     string
 	Status     int
 	CreateId   int
@@ -24,6 +31,37 @@ type Node struct {
 
 func (m *Node) TableName() string {
 	return TableName("node")
+}
+
+func (m *Node) SetScene(scene string) {
+	m.scene = scene
+}
+
+func (m *Node) Valid(v *validation.Validation) {
+	if m.scene == "detail" {
+		if res := v.Required(m.Id, "Id"); !res.Ok {
+			res.Message("Id不能为空")
+			v.SetError("Id", res.Error.Message)
+		}
+	}
+	if m.scene == "add" {
+		if res := v.Required(m.SubGroup, "subGroup"); !res.Ok {
+			res.Message("SubGroup不能为空")
+			v.SetError("SubGroup", res.Error.Message)
+		}
+		if res := v.Required(m.NodeType, "nodeType"); !res.Ok {
+			res.Message("NodeType不能为空")
+			v.SetError("NodeType", res.Error.Message)
+		}
+		if res := v.Range(m.NodeType,1,4, "nodeType"); !res.Ok {
+			res.Error.Message = res.Error.Name + res.Error.Message
+			v.SetError("NodeType", res.Error.Message)
+		}
+		if res := v.Required(m.NodeName, "nodeName"); !res.Ok {
+			res.Message("NodeName不能为空")
+			v.SetError("NodeName", res.Error.Message)
+		}
+	}
 }
 
 func NodeGetList(page int, pageSize int, filters ...interface{}) ([]*Node, int64) {

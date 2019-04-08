@@ -8,15 +8,17 @@
 package models
 
 import (
-	"fmt"
 	"github.com/astaxie/beego/orm"
 	"github.com/astaxie/beego/validation"
 )
 
 type Group struct {
+	scene   string
 	Id         int
-	GroupName  string `valid:"Required"`
-	Detail     string `valid:"Required"`
+	//GroupName  string `valid:"Required"`
+	//Detail     string `valid:"Required"`
+	GroupName  string
+	Detail     string
 	Status     int
 	CreateId   int
 	UpdateId   int
@@ -27,7 +29,26 @@ type Group struct {
 
 //所有验证通过后执行该方法
 func (m *Group) Valid(v *validation.Validation) {
-	fmt.Println()
+	if m.scene == "delete" {
+		if res := v.Required(m.Id, "id"); !res.Ok {
+			res.Error.Message = res.Error.Name + res.Error.Message
+			v.SetError("Id", res.Error.Message)
+		}
+	}
+	if m.scene == "add" {
+		if res := v.Required(m.GroupName, "groupName"); !res.Ok {
+			res.Error.Message = res.Error.Name + res.Error.Message
+			v.SetError("GroupName", res.Error.Message)
+		}
+		if res := v.Required(m.Detail, "detail"); !res.Ok {
+			res.Error.Message = res.Error.Name + res.Error.Message
+			v.SetError("Detail", res.Error.Message)
+		}
+	}
+}
+
+func (m *Group) SetScene(scene string) {
+	m.scene = scene
 }
 
 func (m *Group) TableName() string {
