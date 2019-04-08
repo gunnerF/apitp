@@ -46,11 +46,11 @@ func (m *Node) Valid(v *validation.Validation) {
 	}
 	if m.scene == "add" {
 		if res := v.Required(m.SubGroup, "subGroup"); !res.Ok {
-			res.Message("SubGroup不能为空")
+			res.Error.Message = res.Error.Name + res.Error.Message
 			v.SetError("SubGroup", res.Error.Message)
 		}
 		if res := v.Required(m.NodeType, "nodeType"); !res.Ok {
-			res.Message("NodeType不能为空")
+			res.Error.Message = res.Error.Name + res.Error.Message
 			v.SetError("NodeType", res.Error.Message)
 		}
 		if res := v.Range(m.NodeType, 1, 4, "nodeType"); !res.Ok {
@@ -58,7 +58,7 @@ func (m *Node) Valid(v *validation.Validation) {
 			v.SetError("NodeType", res.Error.Message)
 		}
 		if res := v.Required(m.NodeName, "nodeName"); !res.Ok {
-			res.Message("NodeName不能为空")
+			res.Error.Message = res.Error.Name + res.Error.Message
 			v.SetError("NodeName", res.Error.Message)
 		}
 	}
