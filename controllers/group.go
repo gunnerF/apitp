@@ -86,5 +86,5 @@ func (c *GroupController) WordDown() {
 	}
 	result := make(utils.ResultJson)
 	result["down_url"] = host + fileName
-	c.jsonMsgResult(utils.DeleteSuccess["message"], utils.DeleteSuccess["code"].(int), 1, result)
+	c.jsonMsgResult(utils.RequestSuccess["message"], utils.RequestSuccess["code"].(int), 1, result)
 }

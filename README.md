@@ -10,6 +10,7 @@ go get github.com/go-sql-driver/mysql
 go get github.com/patrickmn/go-cache
 go get github.com/pkg/errors
 go get github.com/astaxie/beego/validation
+go get baliance.com/gooxml/  -- 支持word、excel处理
 // 进入到项目目录，启动项目
 bee run
 // 访问示例： http://localhost:8080/v1/node/getNodeType
