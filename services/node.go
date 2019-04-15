@@ -10,28 +10,22 @@ package services
 import (
 	"apitp/models"
 	"apitp/utils"
+	"strconv"
 )
 
 type NodeService struct {
 	BaseService
 }
 
-func (s *NodeService) NodeGetList(page int, pageSize int, filters ...interface{}) (utils.ResultJsonArr, int64) {
-	nodes, count := models.NodeGetList(page, pageSize, filters...)
-	result := make(utils.ResultJsonArr, len(nodes))
-	if len(nodes) > 0 {
-		for k, v := range nodes {
+func (s *NodeService) NodeGetList(page int, pageSize int, query map[string]interface{}) (utils.ResultJsonArr, int64) {
+	nodes, count := models.NodeGetList(page, pageSize, query)
+	result := make(utils.ResultJsonArr, len(*nodes))
+	if len(*nodes) > 0 {
+		for k, v := range *nodes {
 			row := make(utils.ResultJson)
-			row["id"] = v.Id
-			row["nodeType"] = v.NodeType
-			row["nodeName"] = v.NodeName
-			row["detail"] = v.Detail
-			row["status"] = v.Status
-			row["statusText"] = utils.NodeStatus[v.Status]
-			row["subGroupName"] = v.SubGroup.SubGroupName
-			row["groupName"] = v.SubGroup.Group.GroupName
-			row["createTime"] = s.FormatDate(v.CreateTime, utils.FmtDate[2])
-			row["updateTime"] = s.FormatDate(v.CreateTime, utils.FmtDate[2])
+			row = v
+			row["create_time"] = s.FormatDate(v["create_time"].(string), utils.FmtDate[2])
+			row["update_time"] = s.FormatDate(v["update_time"].(string), utils.FmtDate[2])
 			result[k] = row
 		}
 	}
@@ -51,8 +45,8 @@ func (s *NodeService) NodeGetDetail(nodeId int) utils.ResultJsonArr {
 		row["statusText"] = utils.NodeStatus[node.Status]
 		row["subGroupName"] = node.SubGroup.SubGroupName
 		row["groupName"] = node.SubGroup.Group.GroupName
-		row["createTime"] = s.FormatDate(node.CreateTime, utils.FmtDate[2])
-		row["updateTime"] = s.FormatDate(node.CreateTime, utils.FmtDate[2])
+		row["createTime"] = s.FormatDate(strconv.FormatInt(node.CreateTime, 10), utils.FmtDate[2])
+		row["updateTime"] = s.FormatDate(strconv.FormatInt(node.CreateTime, 10), utils.FmtDate[2])
 		result[0] = row
 	}
 	return result

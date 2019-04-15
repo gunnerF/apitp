@@ -11,6 +11,7 @@ import (
 	"apitp/utils"
 	"github.com/astaxie/beego"
 	"sort"
+	"strconv"
 	"time"
 )
 
@@ -18,8 +19,9 @@ type BaseService struct {
 }
 
 //格式化时间
-func (s *BaseService) FormatDate(createTime int64, format string) string {
-	return beego.Date(time.Unix(createTime, 0), format)
+func (s *BaseService) FormatDate(createTime string, format string) string {
+	timeUnix, _ := strconv.ParseInt(createTime, 10, 64)
+	return beego.Date(time.Unix(timeUnix, 0), format)
 }
 
 //map返回值排序方法

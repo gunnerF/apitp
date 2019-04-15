@@ -30,26 +30,18 @@ func (c *NodeController) GetList() {
 	if err != nil {
 		page = c.page
 	}
-
 	pageSize, err := c.GetInt("pageSize")
 	if err != nil {
 		pageSize = c.pageSize
 	}
-	nodeName := c.GetString("nodeName")
-	subGroupName := c.GetString("subGroupName")
-	groupName := c.GetString("groupName")
-	filters := make([]interface{}, 0)
-	if nodeName != "" {
-		filters = append(filters, "NodeName__contains", nodeName)
+	query := map[string]interface{}{
+		"page":         page,
+		"pageSize":     pageSize,
+		"nodeName":     c.GetString("nodeName"),
+		"subGroupName": c.GetString("subGroupName"),
+		"groupName":    c.GetString("groupName"),
 	}
-	if subGroupName != "" {
-		filters = append(filters, "SubGroup__SubGroupName__contains", subGroupName)
-	}
-	if groupName != "" {
-		filters = append(filters, "SubGroup__Group__GroupName__contains", groupName)
-	}
-	result, count := new(services.NodeService).NodeGetList(page, pageSize, filters...)
-	new(services.NodeService).NodeGetList(page, pageSize, filters...)
+	result, count := new(services.NodeService).NodeGetList(page, pageSize, query)
 	c.jsonMsgResult(utils.RequestSuccess["message"], utils.RequestSuccess["code"].(int), count, result)
 
 }
@@ -74,6 +66,7 @@ func (c *NodeController) NodeDetail() {
 	nodeId, _ := c.GetInt("id")
 	node := new(models.Node)
 	node.SetScene("detail")
+	node.Id = nodeId
 	c.ParamsValidate(node)
 	result := new(services.NodeService).NodeGetDetail(nodeId)
 	c.jsonMsgResult(utils.RequestSuccess["message"], utils.RequestSuccess["code"].(int), int64(len(result)), result)

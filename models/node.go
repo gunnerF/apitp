@@ -8,16 +8,14 @@
 package models
 
 import (
+	"fmt"
 	"github.com/astaxie/beego/orm"
 	"github.com/astaxie/beego/validation"
 )
 
 type Node struct {
-	scene string
-	Id    int
-	//SubGroup   *SubGroup `orm:"rel(fk)" valid:"Required"` //orm定义model间关联关系，用于关联查询, valid定义参数验证
-	//NodeType   int       `valid:"Required;Range(1,4)"`
-	//NodeName   string    `json:"nodeName" valid:"Required"`
+	scene      string
+	Id         int
 	SubGroup   *SubGroup `orm:"rel(fk)"` //orm定义model间关联关系，用于关联查询, valid定义参数验证
 	NodeType   int
 	NodeName   string
@@ -39,6 +37,7 @@ func (m *Node) SetScene(scene string) {
 
 func (m *Node) Valid(v *validation.Validation) {
 	if m.scene == "detail" {
+		fmt.Println("m.Id:", m.Id)
 		if res := v.Required(m.Id, "Id"); !res.Ok {
 			res.Message("Id不能为空")
 			v.SetError("Id", res.Error.Message)
@@ -64,20 +63,64 @@ func (m *Node) Valid(v *validation.Validation) {
 	}
 }
 
-func NodeGetList(page int, pageSize int, filters ...interface{}) ([]*Node, int64) {
+//func NodeGetList(page int, pageSize int, filters ...interface{}) ([]*Node, int64) {
+//	offset := (page - 1) * pageSize
+//	list := make([]*Node, 0)
+//	l := len(filters)
+//	query := orm.NewOrm().QueryTable(TableName("node"))
+//	if l > 0 {
+//		for i := 0; i < l; i += 2 {
+//			query = query.Filter(filters[i].(string), filters[i+1])
+//		}
+//	}
+//	query = query.RelatedSel()
+//	total, _ := query.Count()
+//	query.OrderBy("-id").Limit(pageSize, offset).All(&list)
+//	return list, total
+//}
+
+func NodeGetList(page int, pageSize int, query map[string]interface{}) (*[]orm.Params, int64) {
 	offset := (page - 1) * pageSize
-	list := make([]*Node, 0)
+	var result []orm.Params
+	o := orm.NewOrm()
+	var conditions []interface{}
+	filters := make([]interface{}, 0)
+	if query["nodeName"] != "" {
+		nodeName := "%" + query["nodeName"].(string) + "%"
+		filters = append(filters, "node_name like ?", nodeName)
+	}
+	if query["subGroupName"] != "" {
+		subGroupName := "%" + query["subGroupName"].(string) + "%"
+		filters = append(filters, "tp_sub_group.sub_group_name like ?", subGroupName)
+	}
+	if query["groupName"] != "" {
+		groupName := "%" + query["subGroupName"].(string) + "%"
+		filters = append(filters, "tp_group.group_name like ?", groupName)
+	}
 	l := len(filters)
-	query := orm.NewOrm().QueryTable(TableName("node"))
+	qb, _ := orm.NewQueryBuilder("mysql")
+	fields := `tp_node.*, tp_sub_group.sub_group_name, tp_group.group_name`
+	qb = qb.Select(fields).From("tp_node")
+	qb = qb.LeftJoin("tp_sub_group").On("tp_node.sub_group_id = tp_sub_group.id")
+	qb = qb.LeftJoin("tp_group").On("tp_sub_group.group_id = tp_group.id")
+
 	if l > 0 {
 		for i := 0; i < l; i += 2 {
-			query = query.Filter(filters[i].(string), filters[i+1])
+			qb = qb.Where(filters[i].(string))
+			conditions = append(conditions, filters[i+1])
 		}
 	}
-	query = query.RelatedSel()
-	total, _ := query.Count()
-	query.OrderBy("-id").Limit(pageSize, offset).All(&list)
-	return list, total
+	sql := qb.String()
+	o.Raw(sql, conditions).Values(&result)
+	count := len(result)
+	qb = qb.OrderBy("tp_node.id").Desc()
+	qb = qb.Limit(pageSize)
+	if offset > 0 {
+		qb = qb.Offset(offset)
+	}
+	sql = qb.String()
+	o.Raw(sql, conditions).Values(&result)
+	return &result, int64(count)
 }
 
 func NodeGetDetail(nodeId int) *Node {

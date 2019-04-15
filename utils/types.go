@@ -7,5 +7,7 @@
 ***********************************************/
 package utils
 
-type ResultJsonArr []map[string]interface{}
-type ResultJson map[string]interface{}
+import "github.com/astaxie/beego/orm"
+
+type ResultJsonArr = []orm.Params
+type ResultJson = orm.Params
