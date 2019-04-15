@@ -16,6 +16,7 @@ func main() {
 		beego.BConfig.WebConfig.StaticDir["/swagger"] = "swagger"
 	}
 	utils.Che = cache.New(60*time.Minute, 120*time.Minute)
+	beego.SetStaticPath("/down", "download")
 	models.Init()
 	beego.Run()
 }

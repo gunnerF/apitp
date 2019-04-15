@@ -22,6 +22,7 @@ type GroupController struct {
 func (c *GroupController) URLMapping() {
 	c.Mapping("GroupAdd", c.GroupAdd)
 	c.Mapping("GroupDelete", c.GroupDelete)
+	c.Mapping("WordDown", c.WordDown)
 }
 
 // @Title 新增组
@@ -63,4 +64,27 @@ func (c *GroupController) GroupDelete() {
 		c.jsonMsgResult(err.Error(), utils.ParamsError["code"].(int), 1, c.resultJsonArr)
 	}
 	c.jsonMsgResult(utils.DeleteSuccess["message"], utils.DeleteSuccess["code"].(int), 1, c.resultJsonArr)
+}
+
+// @Title word文件生成
+// @Description word文件
+// @Param id body int true "组id"
+// @Success 20000 {[]map[string]interface{}}
+// @Failure 403 body is empty
+//@router /word-down [get]
+func (c *GroupController) WordDown() {
+	id, _ := c.GetInt("id")
+	group := new(models.Group)
+	group.SetScene("delete")
+	group.Id = id
+	host := c.Ctx.Request.Host + "/down/"
+	//fmt.Println("URLPATH:", c.Ctx.Request.Host)
+	c.ParamsValidate(group)
+	fileName, err := new(services.GroupService).WordDown(id)
+	if err != nil {
+		c.jsonMsgResult(err.Error(), utils.ParamsError["code"].(int), 1, c.resultJsonArr)
+	}
+	result := make(utils.ResultJson)
+	result["down_url"] = host + fileName
+	c.jsonMsgResult(utils.DeleteSuccess["message"], utils.DeleteSuccess["code"].(int), 1, result)
 }
