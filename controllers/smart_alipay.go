@@ -15,9 +15,9 @@
 package controllers
 
 import (
-	"github.com/smartwalle/alipay"
-	"fmt"
 	"apitp/utils"
+	"fmt"
+	"github.com/smartwalle/alipay"
 )
 
 type SmartAliPayController struct {
@@ -66,7 +66,7 @@ func (c *SmartAliPayController) HandleUserPay() {
 	}
 	var payURL = url.String()
 	//fmt.Println("payURL:", payURL)
-	result := utils.ResultJson{"payURL": payURL,}
+	result := utils.ResultJson{"payURL": payURL}
 	c.jsonMsgResult(utils.RequestSuccess["message"], utils.RequestSuccess["code"].(int), 1, result)
 }
 
@@ -80,7 +80,7 @@ func (c *SmartAliPayController) Return() {
 	c.Ctx.Request.ParseForm()
 	client := newAliPayClient()
 	ok, err := client.VerifySign(c.Ctx.Request.Form)
-	fmt.Println( "alipay 回调return=================================", ok, err)
+	fmt.Println("alipay 回调return=================================", ok, err)
 	//处理业务
 }
 
