@@ -30,6 +30,11 @@ func init() {
 				&controllers.LoginController{},
 			),
 		),
+		beego.NSNamespace("/smart-pay",
+			beego.NSInclude(
+				&controllers.SmartAliPayController{},
+			),
+		),
 	)
 	beego.AddNamespace(ns)
 }

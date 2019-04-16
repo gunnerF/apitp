@@ -11,6 +11,7 @@ go get github.com/patrickmn/go-cache
 go get github.com/pkg/errors
 go get github.com/astaxie/beego/validation
 go get baliance.com/gooxml/  -- 支持word、excel处理
+go get github.com/smartwalle/alipay  -- 引入开源sdk，对接支付宝支付
 // 进入到项目目录，启动项目
 bee run
 // 访问示例： http://localhost:8080/v1/node/getNodeType
