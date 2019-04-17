@@ -84,6 +84,7 @@ func NodeGetList(page int, pageSize int, query url.Values) (*[]orm.Params, int64
 	offset := (page - 1) * pageSize
 	var result []orm.Params
 	o := orm.NewOrm()
+	err := o.Begin()
 	var conditions []interface{}
 	filters := make([]interface{}, 0)
 	if query.Get("nodeName") != "" {
@@ -121,6 +122,11 @@ func NodeGetList(page int, pageSize int, query url.Values) (*[]orm.Params, int64
 	}
 	sql = qb.String()
 	o.Raw(sql, conditions).Values(&result)
+	if err != nil {
+		err = o.Rollback()
+	} else {
+		err = o.Commit()
+	}
 	return &result, int64(count)
 }
 
