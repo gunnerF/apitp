@@ -11,6 +11,7 @@ import (
 	"fmt"
 	"github.com/astaxie/beego/orm"
 	"github.com/astaxie/beego/validation"
+	"net/url"
 )
 
 type Node struct {
@@ -79,22 +80,22 @@ func (m *Node) Valid(v *validation.Validation) {
 //	return list, total
 //}
 
-func NodeGetList(page int, pageSize int, query map[string]interface{}) (*[]orm.Params, int64) {
+func NodeGetList(page int, pageSize int, query url.Values) (*[]orm.Params, int64) {
 	offset := (page - 1) * pageSize
 	var result []orm.Params
 	o := orm.NewOrm()
 	var conditions []interface{}
 	filters := make([]interface{}, 0)
-	if query["nodeName"] != "" {
-		nodeName := "%" + query["nodeName"].(string) + "%"
+	if query.Get("nodeName") != "" {
+		nodeName := "%" + query.Get("nodeName") + "%"
 		filters = append(filters, "node_name like ?", nodeName)
 	}
-	if query["subGroupName"] != "" {
-		subGroupName := "%" + query["subGroupName"].(string) + "%"
+	if query.Get("subGroupName") != "" {
+		subGroupName := "%" + query.Get("subGroupName") + "%"
 		filters = append(filters, "tp_sub_group.sub_group_name like ?", subGroupName)
 	}
-	if query["groupName"] != "" {
-		groupName := "%" + query["subGroupName"].(string) + "%"
+	if query.Get("groupName") != "" {
+		groupName := "%" + query.Get("groupName") + "%"
 		filters = append(filters, "tp_group.group_name like ?", groupName)
 	}
 	l := len(filters)

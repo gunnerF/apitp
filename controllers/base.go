@@ -12,6 +12,7 @@ import (
 	"apitp/utils"
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/validation"
+	"net/url"
 	"strings"
 )
 
@@ -19,6 +20,7 @@ type BaseController struct {
 	beego.Controller
 	controllerName string //控制器名称
 	actionName     string
+	query          url.Values
 	user           *models.Admin       //用户实例
 	userId         int                 //用户id
 	userName       string              //用户名称
@@ -41,6 +43,8 @@ func (c *BaseController) Prepare() {
 	c.Data["curRoute"] = c.controllerName + "." + c.actionName
 	c.Data["curController"] = c.controllerName
 	c.Data["curAction"] = c.actionName
+	//统一请求参数处理
+	c.queryProcess()
 	//初始化json返回值对象
 	c.resultJsonArr = make(utils.ResultJsonArr, 0)
 	//login validate
@@ -49,6 +53,25 @@ func (c *BaseController) Prepare() {
 		c.userId = 1
 		c.userName = "admin"
 		//c.auth()
+	}
+}
+
+//处理请求参数
+func (c *BaseController) queryProcess() {
+	if c.isGet() {
+		c.Ctx.Request.ParseForm()
+		c.query = c.Ctx.Request.Form
+	}
+	if c.isPost() {
+		c.query = c.Ctx.Request.Form
+	}
+	page, err := c.GetInt("page")
+	if err == nil {
+		c.page = page
+	}
+	pageSize, err := c.GetInt("pageSize")
+	if err == nil {
+		c.pageSize = pageSize
 	}
 }
 
@@ -90,6 +113,11 @@ func (c *BaseController) AdminAuth() {
 //isPost
 func (c *BaseController) isPost() bool {
 	return c.Ctx.Request.Method == "POST"
+}
+
+//isGet
+func (c *BaseController) isGet() bool {
+	return c.Ctx.Request.Method == "GET"
 }
 
 //获取客户端ip

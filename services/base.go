@@ -15,6 +15,14 @@ import (
 	"time"
 )
 
+const (
+	kYMDHIS_A = "Y-m-d H:i:s"
+	kYMDHIS_B = "Y/m/d H:i:s"
+	kYMDHI_A  = "Y/m/d H:i"
+	kYMD_A    = "Y-m-d"
+	kHIS_A    = "H:i:s"
+)
+
 type BaseService struct {
 }
 

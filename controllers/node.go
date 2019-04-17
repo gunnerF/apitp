@@ -26,22 +26,7 @@ func (c *NodeController) URLMapping() {
 // @Failure 403 body is empty
 // @router / [get]
 func (c *NodeController) GetList() {
-	page, err := c.GetInt("page")
-	if err != nil {
-		page = c.page
-	}
-	pageSize, err := c.GetInt("pageSize")
-	if err != nil {
-		pageSize = c.pageSize
-	}
-	query := map[string]interface{}{
-		"page":         page,
-		"pageSize":     pageSize,
-		"nodeName":     c.GetString("nodeName"),
-		"subGroupName": c.GetString("subGroupName"),
-		"groupName":    c.GetString("groupName"),
-	}
-	result, count := new(services.NodeService).NodeGetList(page, pageSize, query)
+	result, count := new(services.NodeService).NodeGetList(c.page, c.pageSize, c.query)
 	c.jsonMsgResult(utils.RequestSuccess["message"], utils.RequestSuccess["code"].(int), count, result)
 
 }
