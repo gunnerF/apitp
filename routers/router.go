@@ -35,6 +35,11 @@ func init() {
 				&controllers.SmartAliPayController{},
 			),
 		),
+		beego.NSNamespace("/ws",
+			beego.NSInclude(
+				&controllers.WebSocketController{},
+			),
+		),
 	)
 	beego.AddNamespace(ns)
 }

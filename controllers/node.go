@@ -83,5 +83,8 @@ func (c *NodeController) NodeAdd() {
 	if err != nil {
 		c.jsonMsgResult(err.Error(), utils.ParamsError["code"].(int), 1, c.resultJsonArr)
 	}
+	//新增成功一天数据，页面实时同步。
+	msg := models.Message{Message: "新增了一个节点, id: " + time.Now().Format("2006-01-02 15:04:05")}
+	broadcast <- msg
 	c.jsonMsgResult(utils.AddSuccess["message"], utils.AddSuccess["code"].(int), 1, result)
 }
