@@ -11,9 +11,11 @@ import (
 	"github.com/astaxie/beego/toolbox"
 	"github.com/gorilla/websocket"
 	"log"
+	"sync"
 )
 
 var (
+	MapMutex  = new(sync.Mutex)
 	//客户端socket map
 	WsClients = make(map[*websocket.Conn]bool)
 	//缓冲2000条记录

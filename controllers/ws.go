@@ -6,8 +6,9 @@
 package controllers
 
 import (
-	"apitp/utils"
 	"apitp/commands"
+	"fmt"
+	"log"
 )
 
 type WebSocketController struct {
@@ -20,11 +21,15 @@ func (c *WebSocketController) URLMapping() {
 
 // @router / [get]
 func (c *WebSocketController) GetWs() {
+	fmt.Println("ws init start")
 	//实例化webSocket对象
 	ws, err := upgrade.Upgrade(c.Ctx.ResponseWriter, c.Ctx.Request, nil)
 	if err != nil {
-		c.jsonMsgResult(err, utils.ParamsError["code"].(int), 1, c.resultJsonArr)
+		log.Fatal("ws init error:", err)
 	}
 	//将客户端对象放入管道map中
+	commands.MapMutex.Lock()
 	commands.WsClients[ws] = true
+	commands.MapMutex.Unlock()
+	fmt.Println("ws init end")
 }
