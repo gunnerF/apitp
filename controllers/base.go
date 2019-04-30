@@ -17,19 +17,13 @@ import (
 	"net/url"
 	"strings"
 )
-
 var (
-	//客户端socket map
-	clients = make(map[*websocket.Conn]bool)
-	//缓冲100条记录
-	broadcast = make(chan models.Message, 100)
-	upgrade   = websocket.Upgrader{
+	upgrade = websocket.Upgrader{
 		//跨域配置
 		CheckOrigin: func(r *http.Request) bool {
 			return true
-		}}
+	}}
 )
-
 type BaseController struct {
 	beego.Controller
 	controllerName string //控制器名称

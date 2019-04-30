@@ -5,6 +5,7 @@ import (
 	"apitp/services"
 	"apitp/utils"
 	"time"
+	"apitp/commands"
 )
 
 type NodeController struct {
@@ -39,8 +40,8 @@ func (c *NodeController) GetList() {
 func (c *NodeController) GetNodeType() {
 	result := new(services.NodeService).GetKeyValues(utils.NodeStatus)
 	//新增成功一条数据，页面实时同步。
-	msg := models.Message{Message: "访问了一次接口, 时间: " + time.Now().Format("2006-01-02 15:04:05:00")}
-	broadcast <- msg
+	msg := models.Message{Message: "访问了一次接口, 时间: " + time.Now().Format("2006-01-02 15:04:05")}
+	commands.Broadcast <- msg
 	c.jsonMsgResult(utils.RequestSuccess["message"], utils.RequestSuccess["code"].(int), int64(len(result)), result)
 }
 
@@ -87,7 +88,7 @@ func (c *NodeController) NodeAdd() {
 		c.jsonMsgResult(err.Error(), utils.ParamsError["code"].(int), 1, c.resultJsonArr)
 	}
 	//新增成功一条数据，页面实时同步。
-	msg := models.Message{Message: "新增了一个节点, 时间: " + time.Now().Format("2006-01-02 15:04:05:00")}
-	broadcast <- msg
+	msg := models.Message{Message: "新增了一个节点, 时间: " + time.Now().Format("2006-01-02 15:04:05")}
+	commands.Broadcast <- msg
 	c.jsonMsgResult(utils.AddSuccess["message"], utils.AddSuccess["code"].(int), 1, result)
 }
