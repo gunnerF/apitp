@@ -17,13 +17,15 @@ import (
 	"net/url"
 	"strings"
 )
+
 var (
 	upgrade = websocket.Upgrader{
 		//跨域配置
 		CheckOrigin: func(r *http.Request) bool {
 			return true
-	}}
+		}}
 )
+
 type BaseController struct {
 	beego.Controller
 	controllerName string //控制器名称

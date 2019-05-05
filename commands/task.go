@@ -11,11 +11,11 @@ import (
 	"github.com/astaxie/beego/toolbox"
 	"github.com/gorilla/websocket"
 	"log"
-	"sync"
 )
 
 var (
-	MapMutex  = new(sync.Mutex)
+	//web socket管道
+	WsChan = make(chan *websocket.Conn, 2000)
 	//客户端socket map
 	WsClients = make(map[*websocket.Conn]bool)
 	//缓冲2000条记录
@@ -27,7 +27,15 @@ func NewWebSocketTask() {
 	//定时不断的广播发送到页面上
 	go func() {
 		//spec: 秒钟：0-59、分钟：0-59、小时：1-23、日期：1-31、月份：1-12、星期：0-6（0 表示周日）
-		tk := toolbox.NewTask("wsTask", "0/10 * * * * *", func() error {
+		tk := toolbox.NewTask("wsTask", "0/2 * * * * *", func() error {
+			func() {
+				select {
+				case ws := <-WsChan:
+					WsClients[ws] = true
+				default:
+					return
+				}
+			}()
 			select {
 			case msg := <-Broadcast:
 				fmt.Println("客户端数量：", len(WsClients))

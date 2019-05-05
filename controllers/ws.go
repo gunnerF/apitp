@@ -28,8 +28,6 @@ func (c *WebSocketController) GetWs() {
 		log.Fatal("ws init error:", err)
 	}
 	//将客户端对象放入管道map中
-	commands.MapMutex.Lock()
-	commands.WsClients[ws] = true
-	commands.MapMutex.Unlock()
+	commands.WsChan <- ws
 	fmt.Println("ws init end")
 }

@@ -3,12 +3,12 @@ package main
 import (
 	_ "apitp/routers"
 
+	"apitp/commands"
 	"apitp/models"
 	"apitp/utils"
 	"github.com/astaxie/beego"
 	"github.com/patrickmn/go-cache"
 	"time"
-	"apitp/commands"
 )
 
 func main() {

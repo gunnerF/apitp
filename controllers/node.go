@@ -1,11 +1,11 @@
 package controllers
 
 import (
+	"apitp/commands"
 	"apitp/models"
 	"apitp/services"
 	"apitp/utils"
 	"time"
-	"apitp/commands"
 )
 
 type NodeController struct {
