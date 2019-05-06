@@ -8,69 +8,52 @@ package commands
 import (
 	"apitp/models"
 	"fmt"
-	"github.com/astaxie/beego/toolbox"
 	"github.com/gorilla/websocket"
 	"log"
+	"github.com/astaxie/beego/toolbox"
 	"sync"
 )
 
-var (
-	//web socket管道
-	WsChan = make(chan *websocket.Conn, 2000)
+type TaskClient struct {
 	//客户端socket map
-	WsClients = make(map[*websocket.Conn]bool)
+	WsClients map[*websocket.Conn]bool
+	TaskMutex sync.Mutex
+}
+
+func initClient() *TaskClient {
+	return &TaskClient{
+		WsClients:make(map[*websocket.Conn]bool),
+		TaskMutex:sync.Mutex{},
+	}
+}
+var (
 	//缓冲2000条记录
 	Broadcast = make(chan models.Message, 2000)
-	//数据交换管道
-	localWsChan = make(chan *websocket.Conn, 2000)
+	ClientA *TaskClient
+	ClientB *TaskClient
+	ClientC *TaskClient
+	ClientD *TaskClient
 )
 
 //创建webSocket定时任务
 func NewWebSocketTask() {
+	ClientA = initClient()
+	ClientB = initClient()
+	ClientC = initClient()
+	ClientD = initClient()
 	//定时不断的广播发送到页面上
 	go func() {
 		//spec: 秒钟：0-59、分钟：0-59、小时：1-23、日期：1-31、月份：1-12、星期：0-6（0 表示周日）
-		tk := toolbox.NewTask("wsTask", "0/2 * * * * *", func() error {
-			//从管道中读出客户端写入map中
-			func() {
-				select {
-				case ws := <-WsChan:
-					WsClients[ws] = true
-				default:
-					return
-				}
-			}()
+		tk := toolbox.NewTask("wsTask", "0/5 * * * * *", func() error {
 			select {
 			//读取管道中消息
 			case msg := <-Broadcast:
-				//主线程等待
-				var wg sync.WaitGroup
-				fmt.Println("客户端数量：", len(WsClients))
-				//开启协程将客户端写入交换管道
-				for client := range WsClients {
-					localWsChan<- client
-				}
-				//开启多个协程并发向客户端推送消息
-				for i := 0; i < 4; i++ {
-					wg.Add(1)
-					go func(msg models.Message) {
-						for {
-							select {
-							case  client := <-localWsChan:
-								err := client.WriteJSON(msg)
-								if err != nil {//出错后移除客户端对象
-									log.Printf("发送消息出错 error: %v", err)
-									client.Close()
-									delete(WsClients, client)
-								}
-							default:
-								wg.Done()
-								return
-							}
-
-						}
-					}(msg)
-				}
+				wg := sync.WaitGroup{}
+				wg.Add(4)
+				go sendMessage(ClientA, msg, wg)
+				go sendMessage(ClientB, msg, wg)
+				go sendMessage(ClientC, msg, wg)
+				go sendMessage(ClientD, msg, wg)
 				wg.Wait()
 			default:
 				fmt.Println("no data")
@@ -83,4 +66,20 @@ func NewWebSocketTask() {
 		//启动定时任务
 		toolbox.StartTask()
 	}()
+}
+
+//向客户端推送消息
+func sendMessage(taskClient *TaskClient, msg models.Message, wg sync.WaitGroup) {
+	fmt.Println("客户端数量：", len(taskClient.WsClients))
+	taskClient.TaskMutex.Lock()
+	for client := range taskClient.WsClients {
+		err := client.WriteJSON(msg)
+		if err != nil {//出错后移除客户端对象
+			log.Printf("发送消息出错 error: %v", err)
+			client.Close()
+			delete(taskClient.WsClients, client)
+		}
+	}
+	taskClient.TaskMutex.Unlock()
+	wg.Done()
 }
