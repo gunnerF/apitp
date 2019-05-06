@@ -8,9 +8,9 @@ package commands
 import (
 	"apitp/models"
 	"fmt"
+	"github.com/astaxie/beego/toolbox"
 	"github.com/gorilla/websocket"
 	"log"
-	"github.com/astaxie/beego/toolbox"
 	"sync"
 )
 
@@ -22,17 +22,18 @@ type TaskClient struct {
 
 func initClient() *TaskClient {
 	return &TaskClient{
-		WsClients:make(map[*websocket.Conn]bool),
-		TaskMutex:sync.Mutex{},
+		WsClients: make(map[*websocket.Conn]bool),
+		TaskMutex: sync.Mutex{},
 	}
 }
+
 var (
 	//缓冲2000条记录
 	Broadcast = make(chan models.Message, 2000)
-	ClientA *TaskClient
-	ClientB *TaskClient
-	ClientC *TaskClient
-	ClientD *TaskClient
+	ClientA   *TaskClient
+	ClientB   *TaskClient
+	ClientC   *TaskClient
+	ClientD   *TaskClient
 )
 
 //创建webSocket定时任务
@@ -74,7 +75,7 @@ func sendMessage(taskClient *TaskClient, msg models.Message, wg sync.WaitGroup) 
 	taskClient.TaskMutex.Lock()
 	for client := range taskClient.WsClients {
 		err := client.WriteJSON(msg)
-		if err != nil {//出错后移除客户端对象
+		if err != nil { //出错后移除客户端对象
 			log.Printf("发送消息出错 error: %v", err)
 			client.Close()
 			delete(taskClient.WsClients, client)
