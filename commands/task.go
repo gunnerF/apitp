@@ -71,6 +71,7 @@ func NewWebSocketTask() {
 
 //向客户端推送消息
 func sendMessage(taskClient *TaskClient, msg models.Message, wg sync.WaitGroup) {
+	defer wg.Done()
 	fmt.Println("客户端数量：", len(taskClient.WsClients))
 	taskClient.TaskMutex.Lock()
 	for client := range taskClient.WsClients {
@@ -82,5 +83,4 @@ func sendMessage(taskClient *TaskClient, msg models.Message, wg sync.WaitGroup) 
 		}
 	}
 	taskClient.TaskMutex.Unlock()
-	wg.Done()
 }
